@@ -35,25 +35,17 @@ public class StatixServices extends VendorServices {
 
     private final ArrayList<Object> mServices = new ArrayList<>();
     private final AlarmManager mAlarmManager;
-    private final AssistManager mAssistManager;
     private final CentralSurfaces mCentralSurfaces;
-    private final FlashlightController mFlashlightController;
 
     @Inject
-    public StatixServices(Context context, AlarmManager alarmManager, AssistManager assistManager, CentralSurfaces centralSurfaces, FlashlightController flashlightController) {
+    public StatixServices(Context context, AlarmManager alarmManager, CentralSurfaces centralSurfaces) {
         super(context);
         mAlarmManager = alarmManager;
-        mAssistManager = assistManager;
         mCentralSurfaces = centralSurfaces;
-        mFlashlightController = flashlightController;
     }
 
     @Override
     public void start() {
-        addService(new SmartPixelsReceiver(mContext));
-        if (mContext.getPackageManager().hasSystemFeature("android.hardware.context_hub") && mContext.getPackageManager().hasSystemFeature("android.hardware.sensor.assist")) {
-            addService(new ElmyraService(mContext, mAssistManager, mFlashlightController));
-        }
         AmbientIndicationContainer ambientIndicationContainer = (AmbientIndicationContainer) mCentralSurfaces.getNotificationShadeWindowView().findViewById(R.id.ambient_indication_container);
         ambientIndicationContainer.initializeView(mCentralSurfaces);
         addService(new AmbientIndicationService(mContext, ambientIndicationContainer, mAlarmManager));
